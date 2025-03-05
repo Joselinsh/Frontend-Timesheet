@@ -1,0 +1,99 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-zoho-gray via-white to-zoho-gray dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+    <div class="bg-white dark:bg-zoho-dark-gray shadow-lg rounded-lg p-8 max-w-md w-full border border-zoho-blue/20">
+      <h2 class="text-2xl font-bold text-center text-zoho-dark-gray dark:text-white mb-6">Pluto Zen Register</h2>
+      <form (ngSubmit)="onRegister()" class="space-y-6">
+        <div>
+          <label for="fullName" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Full Name</label>
+          <input
+            type="text"
+            id="fullName"
+            [(ngModel)]="registerDto.fullName"
+            name="fullName"
+            required
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Email</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="registerDto.email"
+            name="email"
+            required
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+        <div class="relative">
+          <label for="password" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Password</label>
+          <input
+            #passwordInput
+            type="password"
+            id="password"
+            [(ngModel)]="registerDto.password"
+            name="password"
+            required
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+            placeholder="Enter password"
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="absolute right-2 top-9 text-zoho-dark-gray dark:text-gray-300 hover:text-zoho-blue"
+          >
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <div>
+          <label for="phoneNumber" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Phone Number</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            [(ngModel)]="registerDto.phoneNumber"
+            name="phoneNumber"
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+        <div>
+          <label for="dateOfBirth" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Date of Birth</label>
+          <input
+            type="date"
+            id="dateOfBirth"
+            [(ngModel)]="registerDto.dateOfBirth"
+            name="dateOfBirth"
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+        <div>
+          <label for="department" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Department</label>
+          <input
+            type="text"
+            id="department"
+            [(ngModel)]="registerDto.department"
+            name="department"
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+        <div>
+          <label for="designation" class="block text-sm font-medium text-zoho-dark-gray dark:text-gray-300">Designation</label>
+          <input
+            type="text"
+            id="designation"
+            [(ngModel)]="registerDto.designation"
+            name="designation"
+            class="mt-1 w-full px-4 py-2 border border-zoho-blue/20 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-zoho-blue text-white py-2 rounded-md hover:bg-zoho-navy transition duration-300 transform hover:scale-105"
+        >
+          Register
+        </button>
+      </form>
+      <p class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+        Already have an account? <a routerLink="/" class="text-zoho-blue hover:underline">Login here</a>
+      </p>
+      <p *ngIf="errorMessage" class="mt-2 text-center text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+    </div>
+  </div>

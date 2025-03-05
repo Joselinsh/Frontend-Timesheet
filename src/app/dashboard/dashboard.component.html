@@ -1,0 +1,59 @@
+<div class="min-h-screen flex bg-gradient-to-br from-zoho-gray via-white to-zoho-gray dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-zoho-navy text-white shadow-lg fixed h-full backdrop-blur-sm border-r border-zoho-blue/20 dark:border-gray-700">
+    <div class="p-4 border-b border-zoho-blue/20 dark:border-gray-700">
+      <h3 class="text-lg font-bold text-white drop-shadow-md">Pluto Zen</h3>
+    </div>
+    <nav class="mt-6">
+      <a routerLink="/admin" routerLinkActive="bg-zoho-blue text-white" class="block px-4 py-2 text-white hover:bg-zoho-blue/80 hover:text-white transition duration-200 rounded-md">Home</a>
+      <a routerLink="/admin/manage-users" routerLinkActive="bg-zoho-blue text-white" class="block px-4 py-2 text-white hover:bg-zoho-blue/80 hover:text-white transition duration-200 rounded-md">Manage Users</a>
+      <a routerLink="/admin/assign-roles" routerLinkActive="bg-zoho-blue text-white" class="block px-4 py-2 text-white hover:bg-zoho-blue/80 hover:text-white transition duration-200 rounded-md">Assign Roles</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col ml-64">
+    <!-- Top Taskbar (Header) -->
+    <header class="bg-zoho-navy shadow-lg p-4 flex justify-between items-center border-b border-zoho-blue/20 dark:bg-zoho-navy dark:border-gray-700">
+      <div class="flex items-center space-x-4">
+        <!-- Removed search bar -->
+      </div>
+      <div class="flex items-center space-x-4">
+        <button (click)="toggleDarkMode()" class="text-white dark:text-gray-300 p-2 rounded-full hover:bg-zoho-gray/50 dark:hover:bg-gray-600 transition duration-200">🌙</button>
+        <button class="text-yellow-400 p-2 rounded-full hover:bg-yellow-100 dark:hover:bg-yellow-800 transition duration-200">🔔</button>
+        <div class="relative">
+          <div
+            (click)="toggleDropdown()"
+            class="h-10 w-10 rounded-full cursor-pointer flex items-center justify-center bg-zoho-blue text-white font-bold hover:ring-2 hover:ring-zoho-blue transition duration-200"
+          >
+            {{ userInitials }}
+          </div>
+          <div *ngIf="showDropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-zoho-dark-gray shadow-lg rounded-md">
+            <a (click)="logout()" class="block px-4 py-2 text-zoho-dark-gray dark:text-white hover:bg-zoho-blue hover:text-white transition duration-200">Logout</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="p-6 bg-white dark:bg-zoho-dark-gray">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div class="loader ease-linear rounded-full border-4 border-t-4 border-zoho-blue h-12 w-12"></div>
+  </div>
+</div>
+
+<style>
+  .loader {
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>

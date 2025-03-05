@@ -1,0 +1,19 @@
+<h1 class="text-3xl font-bold text-zoho-dark-gray dark:text-white mb-4 drop-shadow-md">Welcome, Admin!</h1>
+<p class="text-gray-600 dark:text-gray-300 mb-6">Manage users and assign roles efficiently.</p>
+
+<!-- Dashboard Stats and Graph -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+  <!-- Total Users Card -->
+  <div class="bg-white dark:bg-zoho-dark-gray p-6 rounded-xl shadow-lg border border-zoho-blue/20 dark:border-gray-700/50 transform hover:scale-105 transition duration-300">
+    <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-white">Total Users</h3>
+    <p class="text-3xl text-zoho-blue mt-2">{{ totalUsers }}</p>
+  </div>
+
+  <!-- Active Users Graph -->
+  <div class="bg-white dark:bg-zoho-dark-gray p-6 rounded-xl shadow-lg border border-zoho-blue/20 dark:border-gray-700/50 transform hover:scale-105 transition duration-300">
+    <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-white">Active Users (Past 7 Days)</h3>
+    <div class="h-64">
+      <canvas id="activeUsersChart" class="w-full"></canvas>
+    </div>
+  </div>
+</div>

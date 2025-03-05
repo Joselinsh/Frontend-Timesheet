@@ -1,0 +1,99 @@
+<div class="bg-white dark:bg-zoho-dark-gray p-6 rounded-xl shadow-lg border border-zoho-blue/20 dark:border-gray-700/50 bg-gradient-to-r from-cyan-100 to-cyan-200 dark:from-gray-600 dark:to-gray-700">
+  <h2 class="text-xl font-semibold text-zoho-dark-gray dark:text-white mb-4">Manage Users</h2>
+
+  <!-- Filters and Sort Options -->
+  <div class="mb-4 flex items-center space-x-4">
+    <label for="roleFilter" class="text-zoho-dark-gray dark:text-white">Filter by Role:</label>
+    <select id="roleFilter" (change)="onRoleFilterChange($event)" class="border border-zoho-blue/20 dark:border-gray-600 rounded-md p-2 focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white mr-4">
+      <option value="All">All</option>
+      <option value="Unassigned">Unassigned</option>
+      <option value="Employee">Employee</option>
+      <option value="HR">HR</option>
+      <option value="Admin">Admin</option>
+    </select>
+
+    <label for="sortOption" class="text-zoho-dark-gray dark:text-white">Sort by:</label>
+    <select id="sortOption" (change)="onSortChange($event)" class="border border-zoho-blue/20 dark:border-gray-600 rounded-md p-2 focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white mr-4">
+      <option value="fullName">Alphabetical Order</option>
+      <option value="id">User ID</option>
+    </select>
+
+    <button (click)="toggleSort()" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">
+      {{ sortDirection === 1 ? '↑ Ascending' : '↓ Descending' }}
+    </button>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead>
+        <tr class="text-gray-600 dark:text-gray-300">
+          <th class="py-2 px-4">User ID</th>
+          <th class="py-2 px-4">Full Name</th>
+          <th class="py-2 px-4">Email</th>
+          <th class="py-2 px-4">Role</th>
+          <th class="py-2 px-4">Department</th>
+          <th class="py-2 px-4">Designation</th>
+          <th class="py-2 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of paginatedUsers" class="border-t border-zoho-blue/20 dark:border-gray-700 hover:bg-zoho-gray/20 dark:hover:bg-gray-700 transition duration-200">
+          <td class="py-2 px-4">{{ user.id }}</td>
+          <td class="py-2 px-4">{{ user.fullName }}</td>
+          <td class="py-2 px-4">{{ user.email }}</td>
+          <td class="py-2 px-4">{{ user.role }}</td>
+          <td class="py-2 px-4">{{ user.department }}</td>
+          <td class="py-2 px-4">{{ user.designation }}</td>
+          <td class="py-2 px-4">
+            <button (click)="viewUser(user)" class="text-zoho-blue hover:underline mr-2">View</button>
+            <button (click)="deleteUser(user.id)" class="text-red-600 hover:underline mr-2">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-4 flex justify-center space-x-2">
+    <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Previous</button>
+    <span class="px-4 py-2 text-zoho-dark-gray dark:text-white">{{ currentPage }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage * itemsPerPage >= users.length" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Next</button>
+  </div>
+
+  <!-- Export and Loading -->
+  <div class="mt-4 flex justify-end space-x-2">
+    <button (click)="exportToCSV()" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Export to CSV</button>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="loader ease-linear rounded-full border-4 border-t-4 border-zoho-blue h-12 w-12"></div>
+  </div>
+
+  <div *ngIf="showViewModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white dark:bg-zoho-dark-gray p-6 rounded-xl shadow-lg w-full max-w-md border border-zoho-blue/20 dark:border-gray-700/50 bg-gradient-to-r from-teal-100 to-teal-200 dark:from-gray-600 dark:to-gray-700">
+      <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-white mb-4">View User Details</h3>
+      <div class="space-y-4">
+        <p><strong>Full Name:</strong> {{ viewedUser.fullName }}</p>
+        <p><strong>Email:</strong> {{ viewedUser.email }}</p>
+        <p><strong>Role:</strong> {{ viewedUser.role }}</p>
+        <p><strong>Phone Number:</strong> {{ viewedUser.phoneNumber }}</p>
+        <p><strong>Date of Birth:</strong> {{ viewedUser.dateOfBirth | date:'yyyy-MM-dd' }}</p>
+        <p><strong>Department:</strong> {{ viewedUser.department }}</p>
+        <p><strong>Designation:</strong> {{ viewedUser.designation }}</p>
+        <p><strong>Joining Date:</strong> {{ viewedUser.joiningDate | date:'yyyy-MM-dd' }}</p>
+      </div>
+      <button type="button" (click)="closeViewModal()" class="mt-4 px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Close</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .loader {
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
