@@ -1,1 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+@import './styles/zoho-theme.scss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html, body { height: 100%; }
+body { margin: 0; }

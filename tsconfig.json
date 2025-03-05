@@ -22,7 +22,8 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "types": ["node", "@angular/material"] // Add @angular/material to include Material type definitions
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
