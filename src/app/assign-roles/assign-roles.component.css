@@ -1,24 +1,46 @@
-/* Match styling with manage-users */
-table {
-    @apply w-full text-left border-collapse;
-  }
-  
-  th, td {
-    @apply py-2 px-4;
-  }
-  
-  th {
-    @apply text-gray-600 dark:text-gray-300 font-semibold;
-  }
-  
-  tr {
-    @apply border-t border-gray-200 dark:border-gray-700;
-  }
-  
-  tr:hover {
-    @apply bg-gray-100 dark:bg-gray-700 transition duration-200;
-  }
-  
-  .shadow-lg {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-  }
+/* src/app/admin/assign-roles/assign-roles.component.css */
+.card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.animate__animated.animate__fadeIn {
+  --animate-duration: 0.3s;
+}
+
+button:disabled {
+  @apply opacity-70;
+}
+
+/* Success Banner Styling */
+.success-banner {
+  @apply shadow-md; /* Replaced box-shadow-md with shadow-md */
+  background-color: #003366; /* Ensure navy blue in light mode */
+}
+
+.dark .success-banner {
+  @apply bg-[#001F4D];
+}
+
+/* No Users State Styling */
+.no-users-card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.no-users-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional Content Styling */
+.additional-content {
+  @apply transition-colors;
+}
+
+.dark .additional-content {
+  @apply bg-gray-700;
+}

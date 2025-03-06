@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -30,4 +30,6 @@ export class AdminService {
   assignRole(userId: number, role: string): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(`${this.apiUrl}/roles/update`, { userId, role }, { headers: this.getHeaders() });
   }
+
+  // Removed getTotalUsers() as we're using getAllUsers() instead
 }

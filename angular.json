@@ -28,7 +28,7 @@
             ],
             "styles": [
               "src/styles/zoho-theme.scss",
-               "src/styles.css"
+               "src/styles/styles.css"
             ],
             "scripts": []
           },

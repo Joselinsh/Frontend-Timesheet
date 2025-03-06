@@ -1,59 +1,32 @@
-// Use a relative path to Angular Material's theming SCSS in node_modules
-@import '../node_modules/@angular/material/theming';
-
-// Define your Zoho-inspired color palette using the legacy API
-$zoho-primary: mat-palette(mat.$blue-palette, 700, 300, 900); // Navy blue (#003366)
-$zoho-accent: mat-palette(mat.$cyan-palette, 600, 200, 800); // Sky blue (#007DB8)
-$zoho-warn: mat-palette(mat.$red-palette); // Red (#D32F2F)
-
-// Define the Zoho theme object using the legacy API
-$zoho-theme: mat-light-theme($zoho-primary, $zoho-accent, $zoho-warn);
-
-// Apply the theme to all Material components
-@include angular-material-theme($zoho-theme);
-
-// Set global typography (Arial or Roboto) to match Tailwind/Zoho
-$mat-typography-config: mat-typography-config(
-  $font-family: 'Arial, sans-serif', // Match Tailwind’s default
-  $display-4: mat-typography-level(112px, 112px, 300),
-  $display-3: mat-typography-level(56px, 56px, 400),
-  $display-2: mat-typography-level(45px, 48px, 400),
-  $display-1: mat-typography-level(34px, 40px, 400),
-  $headline: mat-typography-level(24px, 32px, 400),
-  $title: mat-typography-level(20px, 32px, 500),
-  $subheading-2: mat-typography-level(16px, 28px, 400),
-  $subheading-1: mat-typography-level(15px, 24px, 400),
-  $body-2: mat-typography-level(14px, 24px, 500),
-  $body-1: mat-typography-level(14px, 20px, 400),
-  $caption: mat-typography-level(12px, 20px, 400),
-  $button: mat-typography-level(14px, 14px, 500),
-  $input: mat-typography-level(16px, 1.125, 400)
-);
-
-@include mat-typography-hierarchy($mat-typography-config);
-
-// Custom styles for snackbars to match Zoho colors
-.mat-snack-bar-container {
-  background-color: mat-color($zoho-primary, 700); // Navy blue (#003366)
-  color: white;
-
-  &.mat-snack-bar-error {
-    background-color: mat-color($zoho-warn, 700); // Red (#D32F2F)
-  }
-
-  &.mat-snack-bar-warning {
-    background-color: mat-color($zoho-accent, 600); // Sky blue (#007DB8)
-  }
+/* src/styles.css */
+.zoho-success {
+  background-color: #003366 !important; /* Navy blue */
+  color: white !important;
 }
 
-// Ensure dark mode compatibility with Tailwind
+.zoho-error {
+  background-color: #D32F2F !important; /* Red */
+  color: white !important;
+}
+
+.zoho-warning {
+  background-color: #007DB8 !important; /* Sky blue */
+  color: white !important;
+}
+
 @media (prefers-color-scheme: dark) {
-  .mat-typography {
-    color: white;
+  .zoho-success {
+    background-color: #001F4D !important; /* Darker navy for dark mode */
+    color: white !important;
   }
 
-  .mat-snack-bar-container {
-    background-color: mat-color($zoho-primary, 900); // Darker navy for dark mode
-    color: white;
+  .zoho-error {
+    background-color: #9A0007 !important; /* Darker red for dark mode */
+    color: white !important;
   }
+
+  .zoho-warning {
+    background-color: #005D8B !important; /* Darker sky blue for dark mode */
+    color: white !important;
+}
 }

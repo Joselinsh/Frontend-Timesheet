@@ -1,4 +1,4 @@
-@import './styles/zoho-theme.scss';
+@import './zoho-theme.scss';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
