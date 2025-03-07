@@ -1,0 +1,177 @@
+<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-zoho-blue/20 dark:border-gray-700/50">
+    <h2 class="text-2xl font-bold text-zoho-dark-gray dark:text-white mb-4">Timesheets</h2>
+  
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center">
+      <div class="loader ease-linear rounded-full border-4 border-t-4 border-zoho-blue h-12 w-12"></div>
+    </div>
+  
+    <!-- Error Message -->
+    <div *ngIf="errorMessage && !isLoading" class="bg-zoho-error p-4 rounded-md text-white mb-4 text-center">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Success Message -->
+    <div *ngIf="successMessage && !isLoading" class="bg-green-500 p-4 rounded-md text-white mb-4 text-center">
+      {{ successMessage }}
+    </div>
+  
+    <!-- Submit Timesheet Form -->
+    <div *ngIf="!isLoading && !editingTimesheet" class="mb-6">
+      <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-gray-200 mb-4">Submit New Timesheet</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Project Name</label>
+          <input
+            [(ngModel)]="newTimesheet.projectName"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="text"
+            placeholder="Enter project name"
+          />
+        </div>
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Date</label>
+          <input
+            [(ngModel)]="newTimesheet.date"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="date"
+          />
+        </div>
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Hours Worked</label>
+          <input
+            [(ngModel)]="newTimesheet.hoursWorked"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="number"
+            min="0"
+            placeholder="Enter hours worked"
+          />
+        </div>
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Description</label>
+          <textarea
+            [(ngModel)]="newTimesheet.description"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            placeholder="Enter description (optional)"
+          ></textarea>
+        </div>
+        <button
+          (click)="submitTimesheet()"
+          class="bg-zoho-blue text-white p-2 rounded-md hover:bg-zoho-navy transition-all duration-200 shadow-md hover:shadow-lg"
+        >
+          Submit Timesheet
+        </button>
+      </div>
+    </div>
+  
+    <!-- Edit Timesheet Form -->
+    <div *ngIf="!isLoading && editingTimesheet" class="mb-6">
+      <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-gray-200 mb-4">Edit Timesheet</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Project Name</label>
+          <input
+            [(ngModel)]="editingTimesheet.projectName"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="text"
+          />
+        </div>
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Date</label>
+          <input
+            [(ngModel)]="editingTimesheet.date"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="date"
+          />
+        </div>
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Hours Worked</label>
+          <input
+            [(ngModel)]="editingTimesheet.hoursWorked"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="number"
+            min="0"
+          />
+        </div>
+        <div>
+          <label class="block text-zoho-dark-gray dark:text-gray-300 font-semibold">Description</label>
+          <textarea
+            [(ngModel)]="editingTimesheet.description"
+            class="w-full p-2 border border-zoho-blue/20 rounded-md focus:ring-2 focus:ring-zoho-blue dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          ></textarea>
+        </div>
+        <div class="flex space-x-4">
+          <button
+            (click)="updateTimesheet()"
+            class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            Save Changes
+          </button>
+          <button
+            (click)="cancelEdit()"
+            class="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Timesheets List -->
+    <div *ngIf="!isLoading && timesheets.length > 0" class="overflow-x-auto">
+      <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-gray-200 mb-4">Your Timesheets</h3>
+      <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <thead>
+          <tr class="bg-zoho-blue/10 dark:bg-zoho-blue/20">
+            <th class="py-3 px-4 text-left text-zoho-dark-gray dark:text-gray-300 font-semibold">Project Name</th>
+            <th class="py-3 px-4 text-left text-zoho-dark-gray dark:text-gray-300 font-semibold">Date</th>
+            <th class="py-3 px-4 text-left text-zoho-dark-gray dark:text-gray-300 font-semibold">Hours</th>
+            <th class="py-3 px-4 text-left text-zoho-dark-gray dark:text-gray-300 font-semibold">Description</th>
+            <th class="py-3 px-4 text-left text-zoho-dark-gray dark:text-gray-300 font-semibold">Status</th>
+            <th class="py-3 px-4 text-left text-zoho-dark-gray dark:text-gray-300 font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let timesheet of timesheets" class="border-t border-zoho-blue/20 dark:border-gray-700">
+            <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ timesheet.projectName }}</td>
+            <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ timesheet.date | date:'shortDate' }}</td>
+            <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ timesheet.hoursWorked }}</td>
+            <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ timesheet.description || 'N/A' }}</td>
+            <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ timesheet.status }}</td>
+            <td class="py-3 px-4">
+              <button
+                *ngIf="timesheet.status === 'Pending'"
+                (click)="startEditing(timesheet)"
+                class="text-zoho-blue hover:text-zoho-navy mr-2"
+              >
+                Edit
+              </button>
+              <button
+                *ngIf="timesheet.status === 'Pending'"
+                (click)="deleteTimesheet(timesheet.timesheetId)"
+                class="text-red-500 hover:text-red-600"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- No Timesheets Message -->
+    <div *ngIf="!isLoading && timesheets.length === 0" class="text-center text-gray-600 dark:text-gray-400">
+      No timesheets found. Submit a new timesheet to get started!
+    </div>
+  
+    <style>
+      .loader {
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </div>

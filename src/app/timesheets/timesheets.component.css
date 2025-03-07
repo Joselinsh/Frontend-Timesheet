@@ -1,0 +1,13 @@
+/* Add any custom styles if needed */
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    text-align: left;
+  }
+  
+  tr:hover {
+    background-color: rgba(0, 123, 184, 0.05); /* Zoho blue with opacity */
+  }

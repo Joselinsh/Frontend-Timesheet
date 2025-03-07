@@ -10,29 +10,25 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   loginDto = { email: '', password: '' };
   errorMessage: string | null = null;
-  showPassword: boolean = false; // Track password visibility
+  showPassword: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin(): void {
+    this.errorMessage = null; // Clear previous errors
     this.authService.login(this.loginDto).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('roleId', response.roleId?.toString() ?? '');
-        if (response.message === 'Welcome to Admin Dashboard') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.errorMessage = response.message || 'Role not assigned yet';
-        }
+        // Navigation is handled in AuthService, so we only handle errors here
       },
       error: (err) => {
-        this.errorMessage = err.error?.error || 'Login failed';
-      }
+        this.errorMessage = err.message || 'Login failed';
+        console.error('Login error:', err);
+      },
     });
   }
 

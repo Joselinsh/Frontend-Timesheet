@@ -1,35 +1,143 @@
-<!-- ... (previous HTML unchanged) ... -->
+<div class="container mx-auto p-6 bg-zoho-gray min-h-screen dark:bg-gray-800">
+  <h1 class="text-3xl font-bold text-zoho-dark-gray dark:text-white mb-6">Assign Roles to Users</h1>
+  <div class="mb-4">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearch()"
+      placeholder="Search by name, email, department, or designation..."
+      class="w-full p-2 border border-zoho-blue/20 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-zoho-blue"
+    />
+  </div>
 
-<!-- No Users Message (Enhanced Design with Backend Data) -->
-<div *ngIf="!isLoading && filteredUsers.length === 0" class="text-center py-12">
-  <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto dark:bg-gray-800">
-    <h2 class="text-2xl font-semibold text-zoho-navy dark:text-white mb-4">No Unassigned Users</h2>
-    <p class="text-zoho-dark-gray dark:text-gray-300 mb-6">All users have assigned roles! Your team is fully organized.</p>
-    
-    <!-- Additional Content: Backend-Driven Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div class="bg-zoho-gray p-4 rounded-lg dark:bg-gray-700">
-        <h3 class="text-lg font-semibold text-zoho-navy dark:text-white">Total Users</h3>
-        <p class="text-zoho-dark-gray dark:text-gray-300">{{ totalUsers }} Active Users</p>
+  <!-- Filters and Sort Options -->
+  <div class="mb-4 flex items-center space-x-4">
+    <label for="roleFilter" class="text-zoho-dark-gray dark:text-white">Filter by Role:</label>
+    <select id="roleFilter" [(ngModel)]="roleFilter" (ngModelChange)="applyFiltersAndSort()" class="border border-zoho-blue/20 dark:border-gray-600 rounded-md p-2 focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white mr-4">
+      <option value="All">All</option>
+      <option value="Unassigned">Unassigned</option>
+      <option value="Employee">Employee</option>
+      <option value="HR">HR</option>
+      <option value="Admin">Admin</option>
+    </select>
+
+    <label for="sortOption" class="text-zoho-dark-gray dark:text-white">Sort by:</label>
+    <select id="sortOption" [(ngModel)]="sortOption" (ngModelChange)="applyFiltersAndSort()" class="border border-zoho-blue/20 dark:border-gray-600 rounded-md p-2 focus:ring-2 focus:ring-zoho-blue focus:border-zoho-blue dark:bg-gray-700 dark:text-white mr-4">
+      <option value="fullName">Alphabetical Order</option>
+      <option value="id">User ID</option>
+    </select>
+
+    <button (click)="toggleSort()" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">
+      {{ sortDirection === 1 ? '↑ Ascending' : '↓ Descending' }}
+    </button>
+  </div>
+
+  <div class="mb-4">
+    <button (click)="toggleUserView()" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">
+      {{ showAssignedUsers ? 'View Unassigned Users' : 'View Assigned Users' }}
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="loader ease-linear rounded-full border-4 border-t-4 border-zoho-blue h-12 w-12"></div>
+  </div>
+  <div *ngIf="!isLoading">
+    <div *ngIf="filteredUsers.length === 0 && !showAssignedUsers" class="bg-white p-6 rounded-lg shadow-lg border border-zoho-blue/20 dark:bg-gray-800 dark:border-gray-700/50 text-center bg-gradient-to-r from-cyan-100 to-cyan-200 dark:from-gray-600 dark:to-gray-700">
+      <p class="text-gray-600 dark:text-gray-300">No Unassigned Users</p>
+      <p class="text-gray-500 dark:text-gray-400">All users have assigned roles! Your team is fully organized.</p>
+      <div class="mt-4 flex justify-between text-sm text-zoho-dark-gray dark:text-gray-300">
+        <span>Total Users: {{ totalUsers }} Active Users</span>
+        <span>Assigned Roles: {{ (totalUsers - (showAssignedUsers ? 0 : filteredUsers.length)) / totalUsers * 100 | number:'1.0-0' }}% Role Coverage</span>
       </div>
-      <div class="bg-zoho-gray p-4 rounded-lg dark:bg-gray-700">
-        <h3 class="text-lg font-semibold text-zoho-navy dark:text-white">Assigned Roles</h3>
-        <p class="text-zoho-dark-gray dark:text-gray-300">100% Role Coverage</p> <!-- Could fetch from backend if available -->
+      <button (click)="loadUsers()" class="mt-4 px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Refresh</button>
+    </div>
+    <div *ngIf="showAssignedUsers && assignedUsers.length > 0" class="bg-white p-6 rounded-lg shadow-lg border border-zoho-blue/20 dark:bg-gray-800 dark:border-gray-700/50 bg-gradient-to-r from-cyan-100 to-cyan-200 dark:from-gray-600 dark:to-gray-700">
+      <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-white mb-4">Assigned Users</h3>
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-zoho-blue text-white">
+            <th class="py-2 px-4">User ID</th>
+            <th class="py-2 px-4">Full Name</th>
+            <th class="py-2 px-4">Email</th>
+            <th class="py-2 px-4">Role</th>
+            <th class="py-2 px-4">Department</th>
+            <th class="py-2 px-4">Designation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers" class="border-t border-zoho-blue/20 dark:border-gray-700 hover:bg-zoho-gray/20 dark:hover:bg-gray-700 transition duration-200">
+            <td class="py-2 px-4">{{ user.id }}</td>
+            <td class="py-2 px-4">{{ user.fullName }}</td>
+            <td class="py-2 px-4">{{ user.email }}</td>
+            <td class="py-2 px-4">{{ user.role }}</td>
+            <td class="py-2 px-4">{{ user.department }}</td>
+            <td class="py-2 px-4">{{ user.designation }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mt-4 flex justify-center space-x-2">
+        <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Previous</button>
+        <span class="px-4 py-2 text-zoho-dark-gray dark:text-white">{{ currentPage }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage * itemsPerPage >= assignedUsers.length" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Next</button>
       </div>
     </div>
+    <div *ngIf="showAssignedUsers && assignedUsers.length === 0" class="bg-white p-6 rounded-lg shadow-lg border border-zoho-blue/20 dark:bg-gray-800 dark:border-gray-700/50 text-center bg-gradient-to-r from-cyan-100 to-cyan-200 dark:from-gray-600 dark:to-gray-700">
+      <p class="text-gray-600 dark:text-gray-300">No Assigned Users</p>
+      <p class="text-gray-500 dark:text-gray-400">No users have been assigned roles yet.</p>
+    </div>
+    <div *ngIf="filteredUsers.length > 0 && !showAssignedUsers" class="bg-white p-6 rounded-lg shadow-lg border border-zoho-blue/20 dark:bg-gray-800 dark:border-gray-700/50 bg-gradient-to-r from-cyan-100 to-cyan-200 dark:from-gray-600 dark:to-gray-700">
+      <h3 class="text-lg font-semibold text-zoho-dark-gray dark:text-white mb-4">Unassigned Users</h3>
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-zoho-blue text-white">
+            <th class="py-2 px-4">User ID</th>
+            <th class="py-2 px-4">Full Name</th>
+            <th class="py-2 px-4">Email</th>
+            <th class="py-2 px-4">Department</th>
+            <th class="py-2 px-4">Designation</th>
+            <th class="py-2 px-4">Assign Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers" class="border-t border-zoho-blue/20 dark:border-gray-700 hover:bg-zoho-gray/20 dark:hover:bg-gray-700 transition duration-200">
+            <td class="py-2 px-4">{{ user.id }}</td>
+            <td class="py-2 px-4">{{ user.fullName }}</td>
+            <td class="py-2 px-4">{{ user.email }}</td>
+            <td class="py-2 px-4">{{ user.department }}</td>
+            <td class="py-2 px-4">{{ user.designation }}</td>
+            <td class="py-2 px-4">
+              <select [(ngModel)]="user.newRole" class="p-1 border border-zoho-blue/20 rounded-md dark:bg-gray-700 dark:text-white">
+                <option value="">Select Role</option>
+                <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
+              </select>
+              <button (click)="assignRole(user)" class="ml-2 px-2 py-1 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Assign</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mt-4 flex justify-center space-x-2">
+        <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Previous</button>
+        <span class="px-4 py-2 text-zoho-dark-gray dark:text-white">{{ currentPage }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage * itemsPerPage >= users.length" class="px-4 py-2 bg-zoho-blue text-white rounded-md hover:bg-zoho-navy transition duration-200 transform hover:scale-105">Next</button>
+      </div>
+    </div>
+  </div>
 
-    <button
-      (click)="loadUsers()"
-      class="px-6 py-2 bg-zoho-blue text-white rounded-lg hover:bg-zoho-navy transition duration-200 dark:bg-zoho-blue dark:hover:bg-[#001F4D]"
-    >
-      Refresh
-    </button>
-
-    <!-- Additional Action: Navigate to Manage Users -->
-    <p class="mt-4 text-zoho-dark-gray dark:text-gray-300">
-      <a href="/admin/manage-users" class="text-zoho-blue hover:underline dark:text-zoho-blue">View Assigned Users</a>
-    </p>
+  <!-- Success Banner -->
+  <div *ngIf="showSuccessBanner" class="fixed top-16 right-6 z-50" [@bannerFade]>
+    <div class="bg-green-500 text-white p-3 rounded-md shadow-lg">
+      {{ successMessage }}
+    </div>
   </div>
 </div>
 
-<!-- ... (rest of HTML unchanged) ... -->
+<style>
+  .loader {
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
